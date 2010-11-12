@@ -1,11 +1,11 @@
 package data;
 
-public class Score
+public class Feedback
 {
 	private int white;
 	private int black;
 	
-	public Score( int white, int black )
+	public Feedback( int white, int black )
 	{
 		this.white = white;
 		this.black = black;
@@ -27,7 +27,7 @@ public class Score
 			return true;
 		if( this.getClass() != obj.getClass() )
 			return false;
-		Score otherScore = (Score)obj;
+		Feedback otherScore = (Feedback)obj;
 		return white == otherScore.white && black == otherScore.black;
 	}
 	
