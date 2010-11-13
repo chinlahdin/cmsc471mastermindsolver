@@ -18,6 +18,7 @@ public class Tester
 	{
 		int nrColors;
 		int nrPegs;
+		int nrGuesses = 0;
 				
 		System.out.print( "Enter number of pegs for mastermind: " );
 		nrPegs = in.nextInt(); in.nextLine();
@@ -30,6 +31,7 @@ public class Tester
 		
 		while(true) 
 		{
+			nrGuesses++;
 			CodeSequence guess = guesser.guess();
 			Feedback feedback = oracle.getFeedbackFor(guess);
 			guesser.giveFeedbackForLastGuess(feedback);
@@ -41,6 +43,6 @@ public class Tester
 				break;
 		}
 			
-		System.out.println( "\nWINNER!" );
+		System.out.println( "\nSOLVED IN " + nrGuesses + " GUESSES!" );
 	}
 }

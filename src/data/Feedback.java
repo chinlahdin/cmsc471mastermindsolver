@@ -2,6 +2,9 @@ package data;
 
 public class Feedback
 {
+	private static final float WHITE_VALUE = 1.0f;
+	private static final float BLACK_VALUE = 1.5f;
+	
 	private int white;
 	private int black;
 	
@@ -19,6 +22,11 @@ public class Feedback
 	public int getBlack()
 	{
 		return black;
+	}
+	
+	public float getValue()
+	{
+		return white * WHITE_VALUE + black * BLACK_VALUE;
 	}
 	
 	public boolean equals(Object obj)
