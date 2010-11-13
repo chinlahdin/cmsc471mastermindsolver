@@ -31,7 +31,7 @@ public class Guesser
 	{
 		pegColors = "";
 		for(int i = 0; i < nrPegColors; i++)
-			pegColors += i + "";
+			pegColors += (char)('A' + i) + "";
 	}
 	
 	public CodeSequence guess()
@@ -53,15 +53,16 @@ public class Guesser
 			{ 
 				lastFeedback = feedbackForGuesses.get(feedbackForGuesses.size() - 1);
 				lastGuess = guesses.get(guesses.size() - 1 );
+				
 				if( lastFeedback.getBlack() + lastFeedback.getWhite() == nrPegs )				
 					guess = new RandomGuess(lastGuess);
 				else
-					guess = new RandomGuess( workingColorSpace, nrPegs );
-			
+					//guess = new RandomGuess( workingColorSpace, nrPegs );
+				      guess = new RandomGuess( workingColorSpace, guesses.get(bestGuessIndex), feedbackForGuesses.get(bestGuessIndex) );
 				int i;
 				for(i = 0; i < guesses.size(); i++ )
 					if( guess.equals( guesses.get(i) ) ||
-							(( nrPegs < 8 || lastFeedback.getBlack() + lastFeedback.getWhite() == nrPegs || i == guesses.size() - 1 ) &&
+							( //( nrPegs < 8 || lastFeedback.getBlack() + lastFeedback.getWhite() == nrPegs || i == guesses.size() - 1 ) &&
 									!guess.getFeedbackFor( guesses.get(i) ).equals( feedbackForGuesses.get(i) ) ) )
 						break;
 				if( i == guesses.size() )
@@ -84,5 +85,8 @@ public class Guesser
 		if(feedback.getBlack() + feedback.getWhite() == 0)
 			for( int i = 0; i < lastGuess.getNrPegs(); i++ ) 
 				workingColorSpace = workingColorSpace.replace(lastGuess.getPegColorAt(i) + "", "");
+		
+		if(bestGuessIndex < 0 || feedback.getValue() > feedbackForGuesses.get(bestGuessIndex).getValue())
+			bestGuessIndex = feedbackForGuesses.size() - 1;
 	}
 }

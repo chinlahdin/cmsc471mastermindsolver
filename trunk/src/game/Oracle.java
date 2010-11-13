@@ -54,7 +54,7 @@ public class Oracle
 	{
 		pegColors = "";
 		for(int i = 0; i < nrPegColors; i++)
-			pegColors += i + "";
+			pegColors += (char)('A' + i) + "";
 	}
 	
 	private boolean hasCodeToUseFromFile()

@@ -2,7 +2,7 @@ package data;
 
 public class CodeSequence 
 {
-	private static final char INVALID_PEG_COLOR = '!';
+	protected static final char INVALID_PEG_COLOR = '!';
 	
 	private char[] pegs;
 		
