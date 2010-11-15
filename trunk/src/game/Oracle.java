@@ -43,9 +43,9 @@ public class Oracle
 			System.exit(-1);
 		}
 		//Read in first line as nrPegs
-		nrPegs = cmdFile.nextInt();
+		nrPegs = cmdFile.nextInt(); cmdFile.nextLine();
 		//Read in second line and populate pegColors
-		int numPegColors = cmdFile.nextInt();
+		int numPegColors = cmdFile.nextInt(); cmdFile.nextLine();
 		populatePegColors(numPegColors);
 		//Read in third line (first line with code) as secretCode
 		secretCode = new CodeSequence(cmdFile.nextLine().toCharArray());
