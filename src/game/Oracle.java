@@ -1,6 +1,9 @@
 package game;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 import data.*;
 
@@ -29,12 +32,27 @@ public class Oracle
 	public Oracle(String codeListFileName)
 	{
 		//Open and read a file to generate codes
+		Scanner cmdFile = null;
 		
+		try{
+		cmdFile = new Scanner(new FileInputStream(codeListFileName));
+		
+		}
+		catch(FileNotFoundException e){
+			System.err.println("Cannot open file "+codeListFileName);
+			System.exit(-1);
+		}
 		//Read in first line as nrPegs
+		nrPegs = cmdFile.nextInt();
 		//Read in second line and populate pegColors
-		
+		int numPegColors = cmdFile.nextInt();
+		populatePegColors(numPegColors);
 		//Read in third line (first line with code) as secretCode
+		secretCode = new CodeSequence(cmdFile.nextLine().toCharArray());
 		//Read in all remaining lines and store as elements in codesFromFile ArrayList
+		while(cmdFile.hasNext()){
+			codesFromFile.add(cmdFile.next());
+		}
 	}
 	
 	public void generateNextCode()
