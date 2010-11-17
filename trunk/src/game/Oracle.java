@@ -15,6 +15,7 @@ public class Oracle
 	private CodeSequence secretCode;
 	private String pegColors;
 	private int nrPegs;
+	private int numPegColors;
 	private ArrayList<String> codesFromFile;
 	
 	public Oracle()
@@ -34,6 +35,8 @@ public class Oracle
 		//Open and read a file to generate codes
 		Scanner cmdFile = null;
 		
+		//initialize codes from file container
+		codesFromFile = new ArrayList<String>();
 		try{
 		cmdFile = new Scanner(new FileInputStream(codeListFileName));
 		
@@ -43,16 +46,21 @@ public class Oracle
 			System.exit(-1);
 		}
 		//Read in first line as nrPegs
-		nrPegs = cmdFile.nextInt(); cmdFile.nextLine();
+		nrPegs = cmdFile.nextInt(); 
+		System.out.println("Pegs: " +nrPegs);
 		//Read in second line and populate pegColors
-		int numPegColors = cmdFile.nextInt(); cmdFile.nextLine();
+		numPegColors = cmdFile.nextInt();cmdFile.nextLine();
+		System.out.println("Num peg colors: "+numPegColors);
 		populatePegColors(numPegColors);
 		//Read in third line (first line with code) as secretCode
-		secretCode = new CodeSequence(cmdFile.nextLine().toCharArray());
+		//secretCode = new CodeSequence(cmdFile.nextLine().toCharArray());
 		//Read in all remaining lines and store as elements in codesFromFile ArrayList
 		while(cmdFile.hasNext()){
-			codesFromFile.add(cmdFile.next());
+			
+			codesFromFile.add(cmdFile.nextLine());
 		}
+		
+		cmdFile.close();
 	}
 	
 	public void generateNextCode()
@@ -75,8 +83,29 @@ public class Oracle
 			pegColors += (char)('A' + i) + "";
 	}
 	
-	private boolean hasCodeToUseFromFile()
+	public boolean hasCodeToUseFromFile()
 	{
 		return codesFromFile != null && codesFromFile.size() == 0;
+	}
+	
+	public String getCodes(){
+	
+		String text ="";
+		for(int i = 0; i < codesFromFile.size(); i++){
+			text+=codesFromFile.get(i).toString() + "\n";
+		}
+		return text;
+	}
+	
+	public ArrayList<String> getCodeList(){
+		return codesFromFile;
+	}
+	
+	public int getNumPegs(){
+		return nrPegs;
+	}
+	
+	public int getNumPegColors(){
+		return numPegColors;
 	}
 }

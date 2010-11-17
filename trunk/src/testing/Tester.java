@@ -12,11 +12,11 @@ import data.RandomGuess;
 
 public class Tester 
 {
-	private static Scanner in = new Scanner( System.in );
+	//private static Scanner in = new Scanner( System.in );
 	
 	public static void main( String[] args )
 	{
-		int nrColors;
+		/*int nrColors;
 		int nrPegs;
 		int nrGuesses = 0;
 				
@@ -26,23 +26,32 @@ public class Tester
 		nrColors = in.nextInt(); in.nextLine();
 		
 		Oracle oracle = new Oracle(nrPegs, nrColors);
-		Guesser guesser = new Guesser(nrPegs, nrColors);
+		Guesser guesser = new Guesser(nrPegs, nrColors);*/
 		
+		//start reading from the file
+		Oracle oracle= new Oracle(args[0]);
+		Guesser guesser = new Guesser(oracle.getNumPegs(),oracle.getNumPegColors());
+		//test to see if the codes are there
+		//System.out.println(oracle.getCodes());
 		
-		while(true) 
-		{
-			nrGuesses++;
-			CodeSequence guess = guesser.guess();
-			Feedback feedback = oracle.getFeedbackFor(guess);
-			guesser.giveFeedbackForLastGuess(feedback);
+		while(!oracle.hasCodeToUseFromFile()){
+		
+			int nrGuesses = 0;
+			while(true) 
+			{	
+				nrGuesses++;
+				CodeSequence guess = guesser.guess();
+				Feedback feedback = oracle.getFeedbackFor(guess);
+				guesser.giveFeedbackForLastGuess(feedback);
 			
-			System.out.print( "\nGUESS: " + guess );
-			System.out.println( "\tSCORE:" + feedback );
+				System.out.print( "\nGUESS: " + guess );
+				System.out.println( "\tSCORE:" + feedback );
 			
-			if( feedback.getBlack() == nrPegs )
-				break;
-		}
+				if( feedback.getBlack() == oracle.getNumPegs())
+					break;
+			}
 			
 		System.out.println( "\nSOLVED IN " + nrGuesses + " GUESSES!" );
+		}
 	}
 }
