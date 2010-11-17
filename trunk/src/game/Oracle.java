@@ -61,6 +61,7 @@ public class Oracle
 		}
 		
 		cmdFile.close();
+		generateNextCode();
 	}
 	
 	public void generateNextCode()
@@ -92,7 +93,7 @@ public class Oracle
 	
 		String text ="";
 		for(int i = 0; i < codesFromFile.size(); i++){
-			text+=codesFromFile.get(i).toString() + "\n";
+			text+=codesFromFile.get(i).toString();
 		}
 		return text;
 	}
