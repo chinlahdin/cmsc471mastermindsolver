@@ -61,7 +61,8 @@ public class Guesser
 				
 				if( lastFeedback.getBlack() + lastFeedback.getWhite() == nrPegs )				
 					guess = new RandomGuess(lastGuess);
-				else if( lastFeedback.getBlack() + lastFeedback.getWhite() == 0 )
+				else if( feedbackForGuesses.size() < 1 || 
+						(feedbackForGuesses.get(bestGuessIndex).getBlack() + feedbackForGuesses.get(bestGuessIndex).getWhite() == 0 ) )
 					guess = new RandomGuess( workingColorSpace, nrPegs );
 				else
 					guess = new RandomGuess( workingColorSpace, guesses.get(bestGuessIndex), feedbackForGuesses.get(bestGuessIndex) );
@@ -95,5 +96,15 @@ public class Guesser
 		
 		if(bestGuessIndex < 0 || feedback.getValue() > feedbackForGuesses.get(bestGuessIndex).getValue())
 			bestGuessIndex = feedbackForGuesses.size() - 1;
+	}
+	
+	public String toString()
+	{
+		String returnString = "";
+		for( int i = 0; i < feedbackForGuesses.size(); i++ )
+		{
+			returnString += "GUESS: " + guesses.get(i) + "\tFEEDBACK:" + feedbackForGuesses.get(i) + "\n";
+		}
+		return returnString;
 	}
 }

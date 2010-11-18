@@ -76,10 +76,15 @@ public class Tester
 		int nrGuessesTotal = 0;
 		int nrGuessesPerGame;
 		int maxNrGuessesForOneGame = 0;
+		int nrGamesAtMaxGuesses = 0;
 		
 		while(oracle.hasCodeToUseFromFile() || nrGamesPlayed < nrGames) 
 		{
 			nrGuessesPerGame = 0;
+			
+			if(verbose)
+				System.out.println( "\n----------------------------------------------" );
+			
 			while(true)
 			{
 				CodeSequence guess = guesser.guess();
@@ -89,7 +94,7 @@ public class Tester
 			
 				if(verbose)
 				{
-					System.out.print( "\nGUESS: " + guess );
+					System.out.print( "GUESS: " + guess );
 					System.out.println( "\tFEEDBACK:" + feedback );
 				}
 			
@@ -99,10 +104,21 @@ public class Tester
 			nrGamesPlayed++;
 			nrGuessesTotal += nrGuessesPerGame;
 			if( nrGuessesPerGame > maxNrGuessesForOneGame )
+			{
 				maxNrGuessesForOneGame = nrGuessesPerGame;
+				nrGamesAtMaxGuesses = 1;
+				//System.out.println( guesser );
+			}
+			else if( nrGuessesPerGame == maxNrGuessesForOneGame )
+			{
+				nrGamesAtMaxGuesses++;
+			}
 			
 			if(verbose)
+			{
 				System.out.println( "\nSOLVED IN " + nrGuessesPerGame + " GUESSES!" );
+				System.out.println( "----------------------------------------------\n" );
+			}
 			
 			oracle.generateNextCode();
 			guesser.reset();
@@ -112,5 +128,6 @@ public class Tester
 							" PEGS and " + oracle.getNumPegColors() + " COLORS..." );
 		System.out.println( "\tAVERGAGE NUMBER OF GUESSES: " + nrGuessesTotal / (float)nrGamesPlayed );
 		System.out.println( "\t MAXIMUM NUMBER OF GUESSES: " + maxNrGuessesForOneGame );
+		System.out.println( "\t   PERCENT OF GAMES AT MAX: " + nrGamesAtMaxGuesses / (float)nrGamesPlayed );
 	}
 }
