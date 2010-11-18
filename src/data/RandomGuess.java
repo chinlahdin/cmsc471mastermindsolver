@@ -113,12 +113,16 @@ public class RandomGuess extends CodeSequence
 		}
 		
 		for(i = 0; i < copyOfSequenceToMatch.length; i++)
-			if(copyOfSequenceToMatch[i] != INVALID_PEG_COLOR)
+			if(copyOfSequenceToMatch[i] != INVALID_PEG_COLOR && colors.length() > 1 )
 				colors = colors.replace(copyOfSequenceToMatch[i] + "", "");
 		
 		for(i = 0; i < pegs.length; i++ )
 			if(pegs[i] == INVALID_PEG_COLOR)
+			{
+				//String temp = new String(pegs);
+				//System.out.println( temp );
 				pegs[i] = colors.charAt(rng.nextInt(colors.length()));
+			}
 		
 		return pegs;
 	}

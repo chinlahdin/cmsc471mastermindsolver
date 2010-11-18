@@ -3,6 +3,7 @@ package game;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 import data.*;
@@ -15,7 +16,6 @@ public class Oracle
 	private CodeSequence secretCode;
 	private String pegColors;
 	private int nrPegs;
-	private int numPegColors;
 	private ArrayList<String> codesFromFile;
 	
 	public Oracle()
@@ -34,34 +34,46 @@ public class Oracle
 	{
 		//Open and read a file to generate codes
 		Scanner cmdFile = null;
-		
+				
 		//initialize codes from file container
 		codesFromFile = new ArrayList<String>();
-		try{
-		cmdFile = new Scanner(new FileInputStream(codeListFileName));
+		try
+		{
+			cmdFile = new Scanner(new FileInputStream(codeListFileName));
+			
+			populatePegColors(cmdFile.nextInt()); 
+
+			nrPegs = cmdFile.nextInt(); 
 		
+			cmdFile.nextLine();
+			
+			//Read in third line (first line with code) as secretCode
+			//secretCode = new CodeSequence(cmdFile.nextLine().toCharArray());
+			//Read in all remaining lines and store as elements in codesFromFile ArrayList
+			while(cmdFile.hasNextLine())
+				codesFromFile.add(formatRawCode(cmdFile.nextLine()));
+			
+			generateNextCode();
 		}
-		catch(FileNotFoundException e){
-			System.err.println("Cannot open file "+codeListFileName);
+		catch(FileNotFoundException e)
+		{
+			System.err.println("Cannot open file \"" + codeListFileName + "\"");
 			System.exit(-1);
 		}
-		//Read in first line as nrPegs
-		nrPegs = cmdFile.nextInt(); 
-		System.out.println("Pegs: " +nrPegs);
-		//Read in second line and populate pegColors
-		numPegColors = cmdFile.nextInt();cmdFile.nextLine();
-		System.out.println("Num peg colors: "+numPegColors);
-		populatePegColors(numPegColors);
-		//Read in third line (first line with code) as secretCode
-		//secretCode = new CodeSequence(cmdFile.nextLine().toCharArray());
-		//Read in all remaining lines and store as elements in codesFromFile ArrayList
-		while(cmdFile.hasNext()){
-			
-			codesFromFile.add(cmdFile.nextLine());
+		catch(InputMismatchException e)
+		{
+			System.err.println("Expected an int, but read \"" + e.getCause());
+			System.exit(-1);
 		}
-		
-		cmdFile.close();
-		generateNextCode();
+		catch(ArrayIndexOutOfBoundsException e)
+		{
+			System.err.println("File did not contain any valid codes");
+			System.exit(-1);
+		}
+		finally
+		{
+			cmdFile.close();
+		}
 	}
 	
 	public void generateNextCode()
@@ -74,7 +86,17 @@ public class Oracle
 
 	public Feedback getFeedbackFor(CodeSequence codeSequence)
 	{
+		//System.out.println( "CODE: " + secretCode );
 		return secretCode.getFeedbackFor(codeSequence);
+	}
+	
+	private String formatRawCode( String rawCode )
+	{
+		Scanner raw = new Scanner( rawCode );
+		String formattedCode = "";
+		while( raw.hasNextInt() )
+			formattedCode += (char)('A' + raw.nextInt() - 1) + "";
+		return formattedCode;
 	}
 	
 	private void populatePegColors( int nrPegColors )
@@ -86,27 +108,16 @@ public class Oracle
 	
 	public boolean hasCodeToUseFromFile()
 	{
-		return codesFromFile != null && codesFromFile.size() == 0;
+		return codesFromFile != null && codesFromFile.size() > 0;
 	}
-	
-	public String getCodes(){
-	
-		String text ="";
-		for(int i = 0; i < codesFromFile.size(); i++){
-			text+=codesFromFile.get(i).toString();
-		}
-		return text;
-	}
-	
-	public ArrayList<String> getCodeList(){
-		return codesFromFile;
-	}
-	
-	public int getNumPegs(){
+			
+	public int getNumPegs()
+	{
 		return nrPegs;
 	}
 	
-	public int getNumPegColors(){
-		return numPegColors;
+	public int getNumPegColors()
+	{
+		return pegColors.length();
 	}
 }
