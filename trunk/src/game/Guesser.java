@@ -21,6 +21,11 @@ public class Guesser
 	{
 		this.nrPegs = nrPegs;
 		populatePegColors(nrPegColors);
+		reset();
+	}
+	
+	public void reset()
+	{
 		guesses = new ArrayList<CodeSequence>();
 		feedbackForGuesses = new ArrayList<Feedback>();
 		bestGuessIndex = -1;
@@ -56,9 +61,11 @@ public class Guesser
 				
 				if( lastFeedback.getBlack() + lastFeedback.getWhite() == nrPegs )				
 					guess = new RandomGuess(lastGuess);
+				else if( lastFeedback.getBlack() + lastFeedback.getWhite() == 0 )
+					guess = new RandomGuess( workingColorSpace, nrPegs );
 				else
-					//guess = new RandomGuess( workingColorSpace, nrPegs );
-				      guess = new RandomGuess( workingColorSpace, guesses.get(bestGuessIndex), feedbackForGuesses.get(bestGuessIndex) );
+					guess = new RandomGuess( workingColorSpace, guesses.get(bestGuessIndex), feedbackForGuesses.get(bestGuessIndex) );
+		
 				int i;
 				for(i = 0; i < guesses.size(); i++ )
 					if( guess.equals( guesses.get(i) ) ||
