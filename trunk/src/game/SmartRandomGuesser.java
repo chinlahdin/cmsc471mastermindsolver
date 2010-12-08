@@ -57,8 +57,15 @@ public class SmartRandomGuesser implements Guesser
    				nrOfGuessMatches = 0;
    				
    				for(int i = 0; i < guesses.size(); i++ )
-   					if( !guess.equals( guesses.get(i) ) && guess.getFeedbackFor( guesses.get(i) ).equals( feedbackForGuesses.get(i) ) )
+   				{
+   					if( guess.equals( guesses.get(i) ) )
+   					{
+   						nrOfGuessMatches = 0;
+   						break;
+   					}
+   					if( guess.getFeedbackFor( guesses.get(i) ).equals( feedbackForGuesses.get(i) ) )
    						nrOfGuessMatches++;
+   				}
    				
    				nrGuessesGenerated++;
    				
@@ -74,7 +81,7 @@ public class SmartRandomGuesser implements Guesser
    			}
  
    			System.out.println( nrGuessesGenerated + " guesses generated-- best guess matches " + 
-   								((guesses.size() == nrOfGuessMatches) ? "all previous" : 
+   								((guesses.size() == nrOfGuessMatches) ? "all " + guesses.size() + " previous" : 
    										nrOfGuessMatches + " of " + guesses.size()) + " guesses..." );
     		guesses.add(bestNextGuess);
     		return bestNextGuess;
