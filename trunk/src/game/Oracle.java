@@ -14,9 +14,9 @@ public class Oracle
 	private final static int DEFAULT_NR_PEG_COLORS = 6;
 	
 	private CodeSequence secretCode;
-	private String pegColors;
+	private ColorSpace pegColors;
 	private int nrPegs;
-	private ArrayList<String> codesFromFile;
+	private ArrayList<int[]> codesFromFile;
 	
 	public Oracle()
 	{
@@ -26,7 +26,7 @@ public class Oracle
 	public Oracle( int nrPegs, int nrPegColors )
 	{
 		this.nrPegs = nrPegs;
-		populatePegColors(nrPegColors);
+		pegColors = new ColorSpace(nrPegColors);
 		generateNextCode();
 	}
 	
@@ -36,12 +36,12 @@ public class Oracle
 		Scanner cmdFile = null;
 				
 		//initialize codes from file container
-		codesFromFile = new ArrayList<String>();
+		codesFromFile = new ArrayList<int[]>();
 		try
 		{
 			cmdFile = new Scanner(new FileInputStream(codeListFileName));
 			
-			populatePegColors(cmdFile.nextInt()); 
+			pegColors = new ColorSpace(cmdFile.nextInt()); 
 
 			nrPegs = cmdFile.nextInt(); 
 		
@@ -79,7 +79,7 @@ public class Oracle
 	public void generateNextCode()
 	{
 		if(hasCodeToUseFromFile())
-			secretCode = new CodeSequence(codesFromFile.remove(0).toCharArray());
+			secretCode = new CodeSequence(codesFromFile.remove(0));
 		else
 			secretCode = new RandomGuess(pegColors, nrPegs);
 	}
@@ -90,22 +90,15 @@ public class Oracle
 		return secretCode.getFeedbackFor(codeSequence);
 	}
 	
-	private String formatRawCode( String rawCode )
+	private int[] formatRawCode( String rawCode )
 	{
 		Scanner raw = new Scanner( rawCode );
-		String formattedCode = "";
-		while( raw.hasNextInt() )
-			formattedCode += (char)('A' + raw.nextInt() - 1) + "";
+		int[] formattedCode = new int[nrPegs];
+		for( int i = 0; i < nrPegs && raw.hasNextInt(); i++ )
+			formattedCode[i] = raw.nextInt();
 		return formattedCode;
 	}
-	
-	private void populatePegColors( int nrPegColors )
-	{
-		pegColors = "";
-		for(int i = 0; i < nrPegColors; i++)
-			pegColors += (char)('A' + i) + "";
-	}
-	
+
 	public boolean hasCodeToUseFromFile()
 	{
 		return codesFromFile != null && codesFromFile.size() > 0;

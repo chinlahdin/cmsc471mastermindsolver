@@ -2,13 +2,13 @@ package data;
 
 public class CodeSequence 
 {
-	protected static final char INVALID_PEG_COLOR = '!';
+	protected static final int INVALID_PEG_COLOR = -1;
 	
-	private char[] pegs;
+	private int[] pegs;
 		
-	public CodeSequence(char[] pegs) 
+	public CodeSequence(int[] pegs) 
 	{
-		this.pegs = new char[pegs.length];
+		this.pegs = new int[pegs.length];
 		System.arraycopy(pegs, 0, this.pegs, 0, pegs.length);
 	}
 	
@@ -20,8 +20,8 @@ public class CodeSequence
 		int white = 0;
 		int black = 0;
 		
-		char[] checkedArgumentPegs = new char[pegs.length];
-		char[] checkedPegs = new char[pegs.length];
+		int[] checkedArgumentPegs = new int[pegs.length];
+		int[] checkedPegs = new int[pegs.length];
 		System.arraycopy(codeSequence.pegs, 0, checkedArgumentPegs, 0, pegs.length);
 		System.arraycopy(pegs, 0, checkedPegs, 0, pegs.length);
 		
@@ -50,7 +50,7 @@ public class CodeSequence
 		return pegs.length;
 	}
 	
-	public char getPegColorAt(int pegNr)
+	public int getPegColorAt(int pegNr)
 	{
 		if( pegNr < 0 || pegNr >= pegs.length )
 			return INVALID_PEG_COLOR;
@@ -74,7 +74,10 @@ public class CodeSequence
 	
 	public String toString()
 	{
-		return new String(pegs);
+		String returnString = "";
+		for( int i = 0; i < pegs.length - 1; i++ )
+			returnString += pegs[i] + " ";
+		return returnString + pegs[pegs.length - 1];
 	}
 }
 

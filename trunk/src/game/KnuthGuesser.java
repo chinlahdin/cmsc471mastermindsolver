@@ -34,7 +34,7 @@ public class KnuthGuesser implements Guesser
 	{
 		if( lastGuess == null )
 		{
-			lastGuess = new CodeSequence( new char[]{'A', 'A', 'B', 'C' } );
+			lastGuess = new CodeSequence( new int[]{1, 1, 2, 3 } );
 			return lastGuess;
 		}
 				
@@ -114,15 +114,15 @@ public class KnuthGuesser implements Guesser
 	{
 		ArrayList<CodeSequence> guessSpace = new ArrayList<CodeSequence>();
 		
-		char[] code = {'A', 'A', 'A', 'A' };
+		int[] code = {1, 1, 1, 1 };
 		for( int i = 0; i < GUESS_SPACE_SIZE; i++ )
 		{
 			guessSpace.add(new CodeSequence(code));
 			for( int j = 3; j >= 0; j-- )
 			{
-				if( code[j] == 'F' )
+				if( code[j] == 6 )
 				{
-					code[j] = 'A';
+					code[j] = 1;
 				}
 				else
 				{
