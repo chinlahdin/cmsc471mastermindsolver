@@ -7,6 +7,7 @@ import java.util.ArrayList;
 
 import data.CodeSequence;
 import data.ColorSpace;
+import data.ColorStatistic;
 import data.Feedback;
 import data.RandomGuess;
 
@@ -21,24 +22,28 @@ public class Learner implements Guesser
 	private ColorSpace pegColors;
 	private int nrPegs;
 	private ArrayList<CodeSequence> guesses;
-	private ArrayList<CodeSequence> pastCodes;
+	private ArrayList<ColorStatistic> colorStats;
 	private ArrayList<Feedback> feedbackForGuesses;
 	private int bestGuessIndex;
+	private int gamesPlayed;
 	private ColorSpace workingColorSpace;
 
 	boolean guessMatchesAll;
 
 	public Learner(int nrPegs, int nrPegColors)
 	{
+		gamesPlayed = -1;
 		this.nrPegs = nrPegs;
-		pastCodes = new ArrayList<CodeSequence>();
+		colorStats = new ArrayList<ColorStatistic>();
 		pegColors = new ColorSpace(nrPegColors);
+		
 		reset();
 	}
 
 	public void reset()
 	{
-		if (guesses != null)
+		gamesPlayed++;
+		if (gamesPlayed > 0)
 			study();
 		guesses = new ArrayList<CodeSequence>();
 		feedbackForGuesses = new ArrayList<Feedback>();
@@ -48,9 +53,14 @@ public class Learner implements Guesser
 
 	private void study()
 	{
-		if (guesses.size() > 0)
-			System.out.println("Last guess " + guesses.get(guesses.size() - 1));
-
+		System.out.println("Last guess " + guesses.get(guesses.size() - 1));
+		for (int i = 0; i < pegColors.length(); ++i)
+		{
+			this.colorStats.add(new ColorStatistic(""+i));
+			colorStats.get(colorStats.size()-1).increaseCount();
+			colorStats.get(colorStats.size()-1).getProbability(nrPegs*gamesPlayed);
+		}
+		
 	}
 
 	public CodeSequence guess()
