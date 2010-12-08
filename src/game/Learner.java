@@ -36,7 +36,7 @@ public class Learner implements Guesser
 		this.nrPegs = nrPegs;
 		colorStats = new ArrayList<ColorStatistic>();
 		pegColors = new ColorSpace(nrPegColors);
-		
+
 		reset();
 	}
 
@@ -56,11 +56,12 @@ public class Learner implements Guesser
 		System.out.println("Last guess " + guesses.get(guesses.size() - 1));
 		for (int i = 0; i < pegColors.length(); ++i)
 		{
-			this.colorStats.add(new ColorStatistic(""+i));
-			colorStats.get(colorStats.size()-1).increaseCount();
-			colorStats.get(colorStats.size()-1).getProbability(nrPegs*gamesPlayed);
+			this.colorStats.add(new ColorStatistic("" + i));
+			colorStats.get(colorStats.size() - 1).increaseCount();
+			colorStats.get(colorStats.size() - 1).getProbability(
+					nrPegs * gamesPlayed);
 		}
-		
+
 	}
 
 	public CodeSequence guess()
