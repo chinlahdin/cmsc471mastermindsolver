@@ -121,7 +121,7 @@ public class Tester
                                 if(verbose)
                                 {
                                         System.out.print( "GUESS: " + guess );
-                                        System.out.println( "\tFEEDBACK:" + feedback );
+                                        System.out.println( "\tFEEDBACK:" + feedback + "\n" );
                                 }
                         
                                 if(feedback.getBlack() == oracle.getNumPegs())
