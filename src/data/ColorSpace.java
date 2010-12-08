@@ -33,4 +33,8 @@ public class ColorSpace
 	{
 		return colors.get(new Random().nextInt(colors.size()));
 	}
+	
+	public int getColor(int num){
+		return colors.get(num % colors.size());
+	}
 }

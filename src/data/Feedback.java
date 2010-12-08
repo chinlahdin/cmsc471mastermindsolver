@@ -23,6 +23,10 @@ public class Feedback
 	{
 		return black;
 	}
+
+	public int getBlackAndWhite(){
+		return this.black + this.white;
+	}
 	
 	public float getValue()
 	{
