@@ -19,7 +19,8 @@ public class Tester
 	private static final String NR_PEGS = "-p";
 	private static final String NR_COLORS = "-c";
 	private static final String NR_GAMES = "-g";
-
+	private static final String BIAS_NUM = "-b";
+	
 	private static Scanner in = null;
 	private static String fileName = null;
 	private static boolean verbose = false;
@@ -28,6 +29,7 @@ public class Tester
 	private static int nrPegs = 0;
 	private static int nrColors = 0;
 	private static int nrGames = 0;
+	private static String bias = ""; 
 
 	private static void verifyArgsAndSetup(String[] args)
 	{
@@ -44,6 +46,8 @@ public class Tester
 				nrColors = Integer.parseInt(args[++i]);
 			else if (args[i].equals(NR_GAMES))
 				nrGames = Integer.parseInt(args[++i]);
+			else if(args[i].equals(BIAS_NUM))
+				bias = args[++i];
 			else if (fileName == null)
 				fileName = args[i];
 			else
@@ -108,7 +112,7 @@ public class Tester
 			guesser = new Learner(oracle.getNumPegs(), oracle.getNumPegColors());
 		else
 			guesser = new SmartRandomGuesser(oracle.getNumPegs(),
-					oracle.getNumPegColors());
+					oracle.getNumPegColors(), bias);
 
 		int nrGamesPlayed = 0;
 		int nrGuessesTotal = 0;

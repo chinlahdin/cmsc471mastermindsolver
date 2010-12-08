@@ -79,5 +79,6 @@ public class CodeSequence
 			returnString += pegs[i] + " ";
 		return returnString + pegs[pegs.length - 1];
 	}
+	
 }
 

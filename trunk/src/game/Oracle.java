@@ -12,6 +12,7 @@ public class Oracle
 {
 	private final static int DEFAULT_NR_PEGS = 4;
 	private final static int DEFAULT_NR_PEG_COLORS = 6;
+	private int numCodesLeft;
 	
 	private CodeSequence secretCode;
 	private ColorSpace pegColors;
@@ -28,6 +29,7 @@ public class Oracle
 		this.nrPegs = nrPegs;
 		pegColors = new ColorSpace(nrPegColors);
 		generateNextCode();
+		numCodesLeft = 0;
 	}
 	
 	public Oracle(String codeListFileName)
@@ -53,6 +55,7 @@ public class Oracle
 			while(cmdFile.hasNextLine())
 				codesFromFile.add(formatRawCode(cmdFile.nextLine()));
 			
+			numCodesLeft = codesFromFile.size() + 1;
 			generateNextCode();
 		}
 		catch(FileNotFoundException e)
@@ -78,7 +81,8 @@ public class Oracle
 	
 	public void generateNextCode()
 	{
-		if(hasCodeToUseFromFile())
+		numCodesLeft--;
+		if(codesFromFile != null && codesFromFile.size() > 0 )
 			secretCode = new CodeSequence(codesFromFile.remove(0));
 		else
 			secretCode = new RandomGuess(pegColors, nrPegs);
@@ -101,7 +105,7 @@ public class Oracle
 
 	public boolean hasCodeToUseFromFile()
 	{
-		return codesFromFile != null && codesFromFile.size() > 0;
+		return numCodesLeft > 0;
 	}
 			
 	public int getNumPegs()
