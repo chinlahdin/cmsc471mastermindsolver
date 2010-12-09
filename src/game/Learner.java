@@ -32,11 +32,13 @@ public class Learner implements Guesser
 	private double gamma;
 	private ColorSpace workingColorSpace;
 	private boolean bias1Flag;
+	private double threshold;
 	
 	boolean guessMatchesAll;
 
 	public Learner(int nrPegs, int nrPegColors)
 	{
+		threshold = 0.0;
 		bias1Flag = true;
 		gamesPlayed = -1;
 		gamma = 0.2;
@@ -58,7 +60,7 @@ public class Learner implements Guesser
 	{
 		gamesPlayed++;
 		if (gamesPlayed > 0)
-			study();
+			threshold = study();
 		guesses = new ArrayList<CodeSequence>();
 		feedbackForGuesses = new ArrayList<Feedback>();
 		bestGuessIndex = -1;
@@ -148,9 +150,7 @@ public class Learner implements Guesser
 	
 	public boolean biasCheck2(){
 
-		double threshold = study();
-		
-		if(threshold >= (3*(1/nrPegs)))
+		if(threshold >= (3*(1.0/nrPegs)))
 			return true;
 		return false;
 	}
@@ -179,7 +179,7 @@ public class Learner implements Guesser
 
 		while (!guessMatchesAll)
 		{
-			/*if(biasCheck2()){
+			if(guesses.isEmpty() && biasCheck2()){
 				guessArray = new int[this.nrPegs];
 				for(int z = 0; z < guessArray.length; z++){
 					guessArray[z] = 1;
@@ -188,7 +188,7 @@ public class Learner implements Guesser
 				guess = new CodeSequence(guessArray);
 			}
 			
-			else*/ /*if(biasCheck1()){
+			else if(biasCheck1()){
    					int halfWay = this.nrPegs / 2;
    					int value = 1;
    					for(int y = 0; y < guessArray.length; y++){
@@ -205,7 +205,7 @@ public class Learner implements Guesser
    					guess = new CodeSequence(guessArray);
    									
    				}
-			else*/ if (feedbackForGuesses.isEmpty()
+			else if (feedbackForGuesses.isEmpty()
 					|| feedbackForGuesses.get(bestGuessIndex).getBlack()
 							+ feedbackForGuesses.get(bestGuessIndex).getWhite() == 0)
 				guess = new RandomGuess(workingColorSpace, nrPegs);
@@ -264,7 +264,7 @@ public class Learner implements Guesser
 			for (int i = 0; i < lastGuess.getNrPegs(); i++)
 				workingColorSpace.removeColor(lastGuess.getPegColorAt(i));*/
 
-        if(guesses.size() == 1)
+        if(guesses.size() ==  1 && biasCheck1())
         {
         	if(feedback.getBlackAndWhite() == 2 ){
         		for(int a = lastGuess.getNrPegs() /2; a < lastGuess.getNrPegs(); a++ ){
