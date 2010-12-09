@@ -29,6 +29,7 @@ public class Learner implements Guesser
 	private ArrayList<Feedback> feedbackForGuesses;
 	private int bestGuessIndex;
 	private int gamesPlayed;
+	private double gamma;
 	private ColorSpace workingColorSpace;
 
 	boolean guessMatchesAll;
@@ -36,6 +37,7 @@ public class Learner implements Guesser
 	public Learner(int nrPegs, int nrPegColors)
 	{
 		gamesPlayed = -1;
+		gamma = 0.2;
 		this.nrPegs = nrPegs;
 		patternStats = new ArrayList<PatternStatistic>();
 		codes = new ArrayList<String>();
@@ -71,6 +73,8 @@ public class Learner implements Guesser
 		String subcode;
 		ArrayList<String> oldSubcodes;
 
+		double util1 = 0.0, util2 = 0.0;
+		
 		oldSubcodes = new ArrayList<String>();
 		previousCode = guesses.get(guesses.size() - 1).toString();
 		codes.add(previousCode);
@@ -84,7 +88,6 @@ public class Learner implements Guesser
 				subcode = previousCode.substring(i, i + len);
 				while (subcode.endsWith(" "))
 					subcode = previousCode.substring(i, i + (len + 1));
-
 				for (String oldSubcode : oldSubcodes)
 				{
 					if (subcode.equalsIgnoreCase(oldSubcode))
@@ -98,7 +101,6 @@ public class Learner implements Guesser
 				if (subcode.indexOf(" ") == 0)
 					continue;
 
-				System.out.println("Current subcode = " + subcode);
 				newColorStat = new PatternStatistic(subcode);
 				if (!patternStats.contains(newColorStat))
 					patternStats.add(newColorStat);
@@ -116,6 +118,18 @@ public class Learner implements Guesser
 			}
 			stat.getProbability(nrPegs * gamesPlayed);
 		}
+
+		PatternStatistic mostSignificant = patternStats.get(0);
+		for (PatternStatistic patt: patternStats)
+		{
+			util1 = gamma*(patt.getProbability() + (patt.length() * 1.5));
+			util2 = gamma*(mostSignificant.getProbability() + (mostSignificant.length() * 1.5));
+			if (util1 >	util2)
+			{
+				mostSignificant = patt;
+			}	
+		}
+		System.out.println("Most significant pattern: ("+ util1 + ") " + mostSignificant );
 	}
 
 	public CodeSequence guess()

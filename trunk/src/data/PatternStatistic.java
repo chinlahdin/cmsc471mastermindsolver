@@ -1,16 +1,30 @@
 package data;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class PatternStatistic
 {
 	private int count;
 	private double probability;
-	private String colorID;
+	private String regex;
+	private int length;
 
 	public PatternStatistic(String id)
 	{
-		colorID = id;
+		Pattern pattern;
+		Matcher matcher;
+		regex = id;
 		count = 0;
+		int whitespace = 0;
 		probability = 0.0;
+		char[] chars = id.toCharArray();
+		for (int i = 0; i < id.length(); ++i)
+		{
+			if (chars[i] == ' ')
+				whitespace++;
+		}
+		length = id.length() - whitespace;
 	}
 
 	public int getCount()
@@ -20,12 +34,16 @@ public class PatternStatistic
 
 	public String getRegex()
 	{
-		return colorID;
+		return regex;
 	}
 
 	public double getProbability(int instances)
 	{
-		probability = (1.0 * count) / (1.0 * instances);
+		probability = (1.0 * count) / (1.0 * instances / length);
+		return this.probability;
+	}
+	public double getProbability()
+	{
 		return this.probability;
 	}
 
@@ -33,10 +51,14 @@ public class PatternStatistic
 	{
 		this.count++;
 	}
+	public int length()
+	{
+		return this.length;
+	}
 
 	public String toString()
 	{
-		return "" + colorID + ": (" + count + ")---" + probability;
+		return "" + regex + ": (" + count + ")---" + probability;
 	}
 
 	public boolean equals(Object o)
