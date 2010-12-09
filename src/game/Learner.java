@@ -4,11 +4,13 @@
 package game;
 
 import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import data.CodeSequence;
 import data.ColorSpace;
-import data.ColorStatistic;
 import data.Feedback;
+import data.PatternStatistic;
 import data.RandomGuess;
 
 /**
@@ -22,7 +24,8 @@ public class Learner implements Guesser
 	private ColorSpace pegColors;
 	private int nrPegs;
 	private ArrayList<CodeSequence> guesses;
-	private ArrayList<ColorStatistic> colorStats;
+	private ArrayList<String> codes;
+	private ArrayList<PatternStatistic> patternStats;
 	private ArrayList<Feedback> feedbackForGuesses;
 	private int bestGuessIndex;
 	private int gamesPlayed;
@@ -34,8 +37,15 @@ public class Learner implements Guesser
 	{
 		gamesPlayed = -1;
 		this.nrPegs = nrPegs;
-		colorStats = new ArrayList<ColorStatistic>();
+		patternStats = new ArrayList<PatternStatistic>();
+		codes = new ArrayList<String>();
 		pegColors = new ColorSpace(nrPegColors);
+		// This defines the basic color space
+		for (int i = 1; i < nrPegColors; ++i)
+		{
+			this.patternStats.add(new PatternStatistic("" + i));
+		}
+		// Any other expression we wish to look for:
 
 		reset();
 	}
@@ -53,15 +63,59 @@ public class Learner implements Guesser
 
 	private void study()
 	{
-		System.out.println("Last guess " + guesses.get(guesses.size() - 1));
-		for (int i = 0; i < pegColors.length(); ++i)
-		{
-			this.colorStats.add(new ColorStatistic("" + i));
-			colorStats.get(colorStats.size() - 1).increaseCount();
-			colorStats.get(colorStats.size() - 1).getProbability(
-					nrPegs * gamesPlayed);
-		}
+		Pattern pattern;
+		Matcher matcher;
+		String previousCode;
+		PatternStatistic newColorStat;
+		boolean breakout;
+		String subcode;
+		ArrayList<String> oldSubcodes;
 
+		oldSubcodes = new ArrayList<String>();
+		previousCode = guesses.get(guesses.size() - 1).toString();
+		codes.add(previousCode);
+
+		// Study current code and extract regex's from it
+		for (int len = 2; len < previousCode.length(); ++len)
+		{
+			for (int i = 0; i < previousCode.length() - len; ++i)
+			{
+				breakout = false;
+				subcode = previousCode.substring(i, i + len);
+				while (subcode.endsWith(" "))
+					subcode = previousCode.substring(i, i + (len + 1));
+
+				for (String oldSubcode : oldSubcodes)
+				{
+					if (subcode.equalsIgnoreCase(oldSubcode))
+					{
+						breakout = true;
+						break;
+					}
+				}
+				if (breakout)
+					break;
+				if (subcode.indexOf(" ") == 0)
+					continue;
+
+				System.out.println("Current subcode = " + subcode);
+				newColorStat = new PatternStatistic(subcode);
+				if (!patternStats.contains(newColorStat))
+					patternStats.add(newColorStat);
+				oldSubcodes.add(subcode);
+			}
+		}
+		// Evaluate all probabilities for regex's
+		for (PatternStatistic stat : patternStats)
+		{
+			pattern = Pattern.compile(stat.getRegex());
+			matcher = pattern.matcher(previousCode);
+			while (matcher.find())
+			{
+				stat.increaseCount();
+			}
+			stat.getProbability(nrPegs * gamesPlayed);
+		}
 	}
 
 	public CodeSequence guess()
