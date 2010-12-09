@@ -10,7 +10,7 @@ import data.RandomGuess;
 
 public class SmartRandomGuesser implements Guesser 
 {
-		private final static int MAX_NR_GUESSES_TO_GENERATE = 50000;
+		private final static int MAX_NR_GUESSES_TO_GENERATE = 1000000;
 	
         private ColorSpace pegColors;
         private int nrPegs;
@@ -53,11 +53,12 @@ public class SmartRandomGuesser implements Guesser
     		int nrOfBestNextGuessMatches = 0;
     		boolean guessMatchesAll = false;
     		int nrGuessesGenerated = 0;
-    		int[] cheatArray = new int[this.nrPegs];
+    		//int[] cheatArray = new int[this.nrPegs];
     		
    			while(!guessMatchesAll) 
    			{ 
-   				/*if(guesses.isEmpty() && theBias.equals("b1")){
+   				/*
+   				if(guesses.isEmpty() && theBias.equals("b1")){
    					int halfWay = this.nrPegs / 2;
    					int value = 1;
    					for(int y = 0; y < cheatArray.length; y++){
@@ -83,15 +84,15 @@ public class SmartRandomGuesser implements Guesser
    					guess = new CodeSequence(cheatArray);
    				}
    				else if(theBias.equals("b3")){
-   					int offset = new Random().nextInt(nrPegs);
+   					int offset = new Random().nextInt(workingColorSpace.length());
    					
    					for(int i = 0; i < nrPegs; i++){
-   						cheatArray[i] = workingColorSpace.getColor(i+offset+1);
+   						cheatArray[i] = workingColorSpace.getColor(i + offset);
    					}
    					
    					guess = new CodeSequence(cheatArray);
    				}
-   				else*/ if( feedbackForGuesses.isEmpty() || feedbackForGuesses.get( bestGuessIndex).getBlack() + feedbackForGuesses.get(bestGuessIndex).getWhite() == 0 ){
+   				else */if( feedbackForGuesses.isEmpty() || feedbackForGuesses.get( bestGuessIndex ).getBlackAndWhite() == 0 ){
    					guess = new RandomGuess( workingColorSpace, nrPegs );
    				}
    				else
@@ -138,9 +139,9 @@ public class SmartRandomGuesser implements Guesser
                 feedbackForGuesses.add(feedback);
                 
                 CodeSequence lastGuess = guesses.get(guesses.size() - 1);
-                //means that colors in search space arent correct
-               
-                if(guesses.size() == 1 && theBias.equals("b1"))
+                            
+                /*
+                if( guesses.size() == 1 && theBias.equals("b1"))
                 {
                 	if(feedback.getBlackAndWhite() == 2 ){
                 		for(int a = lastGuess.getNrPegs() /2; a < lastGuess.getNrPegs(); a++ ){
@@ -153,7 +154,9 @@ public class SmartRandomGuesser implements Guesser
                 		}
                 	}
                 }
-                
+                */
+              
+                //means that colors in search space arent correct
                 if(feedback.getBlackAndWhite() == 0)
                         for( int i = 0; i < lastGuess.getNrPegs(); i++ ) 
                                workingColorSpace.removeColor(lastGuess.getPegColorAt(i));
