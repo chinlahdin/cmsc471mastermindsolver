@@ -62,12 +62,13 @@ public class Tester
 	{
 		if (fileName != null)
 		{
-			if (knuth && !(nrPegs == 4 && nrColors == 6))
+			Oracle oracle = new Oracle(fileName);
+			if (knuth && !(oracle.getNumPegs() == 4 && oracle.getNumPegColors() == 6))
 			{
 				knuth = false;
 			}
 
-			return new Oracle(fileName);
+			return oracle;
 		}
 
 		if (knuth)

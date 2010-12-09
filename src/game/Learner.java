@@ -31,11 +31,13 @@ public class Learner implements Guesser
 	private int gamesPlayed;
 	private double gamma;
 	private ColorSpace workingColorSpace;
-
+	private boolean bias1Flag;
+	
 	boolean guessMatchesAll;
 
 	public Learner(int nrPegs, int nrPegColors)
 	{
+		bias1Flag = true;
 		gamesPlayed = -1;
 		gamma = 0.2;
 		this.nrPegs = nrPegs;
@@ -63,7 +65,7 @@ public class Learner implements Guesser
 		workingColorSpace = new ColorSpace(pegColors);
 	}
 
-	private void study()
+	private double study()
 	{
 		Pattern pattern;
 		Matcher matcher;
@@ -124,12 +126,42 @@ public class Learner implements Guesser
 		{
 			util1 = gamma*(patt.getProbability() + (patt.length() * 1.5));
 			util2 = gamma*(mostSignificant.getProbability() + (mostSignificant.length() * 1.5));
+			
 			if (util1 >	util2)
 			{
 				mostSignificant = patt;
 			}	
 		}
 		System.out.println("Most significant pattern: ("+ util1 + ") " + mostSignificant );
+		
+		for(int i = 0; i < oldSubcodes.size(); i++){
+			
+			char compare = oldSubcodes.get(i).charAt(0);
+			for(int j = 0; j < oldSubcodes.get(i).length(); j++){
+				if(compare != oldSubcodes.get(i).charAt(j))
+					bias1Flag = false;
+			}
+		}
+		
+		return util1;
+	}
+	
+	public boolean biasCheck2(){
+
+		double threshold = study();
+		
+		if(threshold >= (3*(1/nrPegs)))
+			return true;
+		return false;
+	}
+	
+	public boolean biasCheck1(){
+		//if three games have been played and all three codes have same color for each 
+		//put in the guess to solve for bias 1
+		if(gamesPlayed>= 3  && bias1Flag){
+			return true;
+		}
+		return false;
 	}
 
 	public CodeSequence guess()
@@ -143,10 +175,37 @@ public class Learner implements Guesser
 		int nrOfBestNextGuessMatches = 0;
 		boolean guessMatchesAll = false;
 		int nrGuessesGenerated = 0;
+		int[] guessArray = new int[this.nrPegs];
 
 		while (!guessMatchesAll)
 		{
-			if (feedbackForGuesses.isEmpty()
+			/*if(biasCheck2()){
+				guessArray = new int[this.nrPegs];
+				for(int z = 0; z < guessArray.length; z++){
+					guessArray[z] = 1;
+				}
+					
+				guess = new CodeSequence(guessArray);
+			}
+			
+			else*/ /*if(biasCheck1()){
+   					int halfWay = this.nrPegs / 2;
+   					int value = 1;
+   					for(int y = 0; y < guessArray.length; y++){
+   						if( y >= halfWay){
+   							guessArray[y] = value++;
+   						}
+   						else{
+   							guessArray[y] = value;
+   							if( y % 2 == 1){
+   								value+=1;
+   							}
+   						}
+   					}
+   					guess = new CodeSequence(guessArray);
+   									
+   				}
+			else*/ if (feedbackForGuesses.isEmpty()
 					|| feedbackForGuesses.get(bestGuessIndex).getBlack()
 							+ feedbackForGuesses.get(bestGuessIndex).getWhite() == 0)
 				guess = new RandomGuess(workingColorSpace, nrPegs);
@@ -201,14 +260,29 @@ public class Learner implements Guesser
 		feedbackForGuesses.add(feedback);
 
 		CodeSequence lastGuess = guesses.get(guesses.size() - 1);
-		if (feedback.getBlack() + feedback.getWhite() == 0)
+		/*if (feedback.getBlack() + feedback.getWhite() == 0)
 			for (int i = 0; i < lastGuess.getNrPegs(); i++)
-				workingColorSpace.removeColor(lastGuess.getPegColorAt(i));
+				workingColorSpace.removeColor(lastGuess.getPegColorAt(i));*/
 
-		if (bestGuessIndex < 0
-				|| feedback.getValue() > feedbackForGuesses.get(bestGuessIndex)
-						.getValue())
-			bestGuessIndex = feedbackForGuesses.size() - 1;
+        if(guesses.size() == 1)
+        {
+        	if(feedback.getBlackAndWhite() == 2 ){
+        		for(int a = lastGuess.getNrPegs() /2; a < lastGuess.getNrPegs(); a++ ){
+        			workingColorSpace.removeColor(lastGuess.getPegColorAt(a));
+        		}
+        	}
+        	if(feedback.getBlackAndWhite() == 1){
+        		for(int a = 0; a < lastGuess.getNrPegs() / 2; a++){
+        			workingColorSpace.removeColor(lastGuess.getPegColorAt(a));
+        		}
+        	}
+        }
+        if(feedback.getBlackAndWhite() == 0)
+            for( int i = 0; i < lastGuess.getNrPegs(); i++ ) 
+                   workingColorSpace.removeColor(lastGuess.getPegColorAt(i));
+        
+		if (bestGuessIndex < 0 || feedback.getValue() > feedbackForGuesses.get(bestGuessIndex).getValue())
+				bestGuessIndex = feedbackForGuesses.size() - 1;
 	}
 
 	public String toString()
