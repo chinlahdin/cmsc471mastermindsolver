@@ -3,7 +3,7 @@ package data;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class PatternStatistic
+public class PatternStatistic implements Comparable<PatternStatistic>
 {
 	private int count;
 	private double probability;
@@ -37,11 +37,12 @@ public class PatternStatistic
 		return regex;
 	}
 
-	public double getProbability(int instances)
+	public double calcProbability(int instances)
 	{
 		probability = (1.0 * count) / (1.0 * instances / length);
 		return this.probability;
 	}
+
 	public double getProbability()
 	{
 		return this.probability;
@@ -51,6 +52,7 @@ public class PatternStatistic
 	{
 		this.count++;
 	}
+
 	public int length()
 	{
 		return this.length;
@@ -71,5 +73,17 @@ public class PatternStatistic
 		}
 		return false;
 
+	}
+
+	@Override
+	public int compareTo(PatternStatistic o)
+	{
+
+		if (o.probability == this.probability)
+			return 0;
+		else
+		{
+			return (o.probability > this.probability) ? -1 : 1;
+		}
 	}
 }
