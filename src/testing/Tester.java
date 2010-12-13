@@ -103,6 +103,9 @@ public class Tester
 
 	public static void main(String[] args)
 	{
+		
+		long start =  System.nanoTime();
+		//long elapsed = 0;
 		verifyArgsAndSetup(args);
 		Oracle oracle = initOracle();
 		Guesser guesser;
@@ -166,8 +169,13 @@ public class Tester
 
 			oracle.generateNextCode();
 			guesser.reset();
+			
 		}
 
+		long elapsed = System.nanoTime() - start;
+		
+		System.out.println("CPU Time: " +elapsed + " in nanoseconds");
+		System.out.println("Average CPU Time " +elapsed /(float) nrGamesPlayed+ " in nanoseconds");
 		System.out.println("Played " + nrGamesPlayed + " game"
 				+ (nrGamesPlayed > 1 ? "s" : "") + " with "
 				+ oracle.getNumPegs() + " PEGS and " + oracle.getNumPegColors()

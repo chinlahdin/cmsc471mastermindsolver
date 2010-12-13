@@ -10,7 +10,7 @@ import data.RandomGuess;
 
 public class SmartRandomGuesser implements Guesser 
 {
-		private final static int MAX_NR_GUESSES_TO_GENERATE = 1000000;
+		private final static int MAX_NR_GUESSES_TO_GENERATE = 25000;
 	
         private ColorSpace pegColors;
         private int nrPegs;
@@ -124,9 +124,9 @@ public class SmartRandomGuesser implements Guesser
    				
    			}
  
-   			System.out.println( nrGuessesGenerated + " guesses generated-- best guess matches " + 
+   			/*System.out.println( nrGuessesGenerated + " guesses generated-- best guess matches " + 
    								((guesses.size() == nrOfGuessMatches) ? "all " + guesses.size() + " previous" : 
-   										nrOfGuessMatches + " of " + guesses.size()) + " guesses..." );
+   										nrOfGuessMatches + " of " + guesses.size()) + " guesses..." );*/
     		guesses.add(bestNextGuess);
     		return bestNextGuess;
     	}
