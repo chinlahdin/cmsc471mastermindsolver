@@ -1,8 +1,13 @@
 package data;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
+/**
+ * A PatternStatistic object holds the statistics of occurrence and counts for a
+ * particular regular expression. These objects can be compared by their
+ * occurrence values, the probability variable.
+ * 
+ * @author M. Curtis, M. Edoror and B. Farrington
+ * 
+ */
 public class PatternStatistic implements Comparable<PatternStatistic>
 {
 	private int count;
@@ -10,10 +15,14 @@ public class PatternStatistic implements Comparable<PatternStatistic>
 	private String regex;
 	private int length;
 
+	/**
+	 * Constructs a pattern statistic with a regex.
+	 * 
+	 * @param id
+	 *            Regex to identify this pattern.
+	 */
 	public PatternStatistic(String id)
 	{
-		Pattern pattern;
-		Matcher matcher;
 		regex = id;
 		count = 0;
 		int whitespace = 0;
@@ -27,32 +36,58 @@ public class PatternStatistic implements Comparable<PatternStatistic>
 		length = id.length() - whitespace;
 	}
 
+	/**
+	 * 
+	 * @return The number of times this regular expression has been witnessed.
+	 */
 	public int getCount()
 	{
 		return this.count;
 	}
 
+	/**
+	 * 
+	 * @return The pattern for this statistic.
+	 */
 	public String getRegex()
 	{
 		return regex;
 	}
 
+	/**
+	 * Divides current count by number of possible occurrences, which is given.
+	 * 
+	 * @param instances
+	 *            Number of maximum occurrences possible for this pattern.
+	 * @return The occurrence rate.
+	 */
 	public double calcProbability(int instances)
 	{
 		probability = (1.0 * count) / (1.0 * instances / length);
 		return this.probability;
 	}
 
+	/**
+	 * 
+	 * @return The current occurrence rate.
+	 */
 	public double getProbability()
 	{
 		return this.probability;
 	}
 
+	/**
+	 * Increases the count of this pattern-statistic.
+	 */
 	public void increaseCount()
 	{
 		this.count++;
 	}
 
+	/**
+	 * 
+	 * @return The length of the regex, which is the number of pegs it occupies.
+	 */
 	public int length()
 	{
 		return this.length;

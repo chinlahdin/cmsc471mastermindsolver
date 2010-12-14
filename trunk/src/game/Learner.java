@@ -1,11 +1,7 @@
-/**
- * 
- */
 package game;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Set;
 import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -17,7 +13,7 @@ import data.PatternStatistic;
 import data.RandomGuess;
 
 /**
- * @author curtism2
+ * @author M. Curtis, M. Edoror and B. Farrington
  * 
  */
 public class Learner implements Guesser
@@ -120,17 +116,17 @@ public class Learner implements Guesser
 			}
 		}
 		TreeSet<Character> uniqueColors = new TreeSet<Character>();
-		for (Character c: previousCode.toCharArray())
+		for (Character c : previousCode.toCharArray())
 		{
 			if (c != 32)
-			uniqueColors.add(c);
+				uniqueColors.add(c);
 		}
-		colorsPerGame += uniqueColors.size()*1.0;
-		System.out.println("Colors per game: "+ colorsPerGame); 
-		
+		colorsPerGame += uniqueColors.size() * 1.0;
+		System.out.println("Colors per game: " + colorsPerGame);
+
 		colorsPerGame /= gamesPlayed;
-		System.out.println("Colors per game: "+ colorsPerGame); 
-		
+		System.out.println("Colors per game: " + colorsPerGame);
+
 		// Evaluate all probabilities for regex's
 		for (PatternStatistic stat : patternStats)
 		{
@@ -193,7 +189,7 @@ public class Learner implements Guesser
 				+ findProbableColor(999));
 		System.out.println("The least probable color is "
 				+ findProbableColor(0));
-		System.out.println("Colors per game: "+ colorsPerGame); 
+		System.out.println("Colors per game: " + colorsPerGame);
 		return util1;
 	}
 
