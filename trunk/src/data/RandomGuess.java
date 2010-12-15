@@ -178,9 +178,12 @@ public class RandomGuess extends CodeSequence
 	}
 
 	/**
+	 * Transforms a character array to a String for output.
+	 * The returned String will take on the following format:
+	 * "[char0, char1, char2, ... charN-1]"
 	 * 
 	 * @param array
-	 * @return
+	 * @return the char array as a String 
 	 */
 	private static String arrayToString(char[] array)
 	{
@@ -192,9 +195,12 @@ public class RandomGuess extends CodeSequence
 	}
 
 	/**
+	 * Transforms an integer array to a String for output.
+	 * The returned String will take on the following format:
+	 * "[int0, int1, int2, ... intN-1]"
 	 * 
 	 * @param array
-	 * @return
+	 * @return the int array as a String 
 	 */
 	private static String arrayToString(int[] array)
 	{
@@ -206,9 +212,13 @@ public class RandomGuess extends CodeSequence
 	}
 
 	/**
+	 * Calculates the most frequent color and the number of times it
+	 * appears in the specified CodeSequence.
 	 * 
 	 * @param sequence
-	 * @return
+	 * @return an integer array with two elements, the first being the
+	 * count of the most frequent color, and the second being the integer
+	 * that represents the most frequent color
 	 */
 	private static int[] getMaxColorCount(CodeSequence sequence)
 	{
@@ -234,11 +244,16 @@ public class RandomGuess extends CodeSequence
 	}
 
 	/**
+	 * A helper method for makeRandomGuessFromSequenceFeedback which determines
+	 * if the current permutation of a CodeSequence has left all unused elements
+	 * the same color.
 	 * 
-	 * @param permutation
-	 * @param sequence
-	 * @param index
-	 * @return
+	 * @param permutation the current permutation of sequence
+	 * @param sequence the CodeSequence which is being permuted
+	 * @param index the index which will receive the next mapping and
+	 * will be ignored during the calculation
+	 * @return true if the remaining, not-yet-mapped-to elements of
+	 * sequence are the same color; otherwise false
 	 */
 	private static boolean unusedColorsAreTheSame(int[] permutation,
 			CodeSequence sequence, int index)
@@ -261,11 +276,18 @@ public class RandomGuess extends CodeSequence
 	}
 
 	/**
+	 * A helper method for makeRandomGuessFromSequenceFeedback which takes
+	 * an integer array representing the current permutation of a guess
+	 * where negative values represent unmapped guess elements, the guess
+	 * as a CodeSequence, and an index in which to find a mapping for.
+	 * It finds and then returns a mapping for the specified index to an
+	 * unused permutation index which contains a different color.
 	 * 
-	 * @param permutation
-	 * @param sequence
-	 * @param index
-	 * @return
+	 * @param permutation the current permutation of the sequence
+	 * @param sequence the guess being permuted
+	 * @param index the index for which to find a non-identity mapping for
+	 * @return the index in sequence in which to map the specified index to
+	 * or just some random index if a non-identity mapping doesn't exist
 	 */
 	private static int getIndexNonIdentityMapping(int[] permutation,
 			CodeSequence sequence, int index)
@@ -316,10 +338,12 @@ public class RandomGuess extends CodeSequence
 	}
 
 	/**
+	 * Creates and returns a unique set of random integers with a range
+	 * from 0 (inclusive) to upTo (exclusive).
 	 * 
-	 * @param nrRandInts
-	 * @param upTo
-	 * @return
+	 * @param nrRandInts the number of unique random integers to create
+	 * @param upTo the upper exclusive limit of the generated values
+	 * @return an integer array containing the created set
 	 */
 	private static int[] createUniqueRandIntSet(int nrRandInts, int upTo)
 	{
@@ -348,99 +372,5 @@ public class RandomGuess extends CodeSequence
 		}
 
 		return uniqueRandInts;
-	}
-
-	/**
-	 * 
-	 * @param colors
-	 * @param sequenceToMatch
-	 * @param feedbackToMatch
-	 * @return
-	 */
-	private static int[] amakeRandomGuessFromSequenceFeedback(
-			ColorSpace colors, CodeSequence sequenceToMatch,
-			Feedback feedbackToMatch)
-	{
-		int[] pegs = new int[sequenceToMatch.getNrPegs()];
-		Random rng = new Random();
-		int[] blackIndexes = new int[feedbackToMatch.getBlack()];
-		int[] whiteIndexes = new int[feedbackToMatch.getWhite()];
-		ColorSpace colorSpace = new ColorSpace(colors);
-		int i;
-		int j;
-		int k;
-
-		for (i = 0; i < pegs.length; i++)
-			pegs[i] = INVALID_PEG_COLOR;
-
-		i = 0;
-		while (i < blackIndexes.length)
-		{
-			blackIndexes[i] = rng.nextInt(pegs.length);
-			for (j = 0; j < i; j++)
-				if (blackIndexes[i] == blackIndexes[j])
-					break;
-			if (i == j)
-				i++;
-			// System.out.println("A");
-		}
-
-		i = 0;
-		while (i < whiteIndexes.length)
-		{
-			whiteIndexes[i] = rng.nextInt(pegs.length);
-			for (j = 0; j < i; j++)
-				if (whiteIndexes[i] == whiteIndexes[j])
-					break;
-			for (k = 0; k < blackIndexes.length; k++)
-				if (whiteIndexes[i] == blackIndexes[k])
-					break;
-			if (i == j && k == blackIndexes.length)
-				i++;
-			// System.out.println("B");
-		}
-
-		int[] copyOfSequenceToMatch = new int[sequenceToMatch.getNrPegs()];
-		for (i = 0; i < copyOfSequenceToMatch.length; i++)
-			copyOfSequenceToMatch[i] = sequenceToMatch.getPegColorAt(i);
-
-		for (i = 0; i < blackIndexes.length; i++)
-		{
-			pegs[blackIndexes[i]] = copyOfSequenceToMatch[blackIndexes[i]];
-			copyOfSequenceToMatch[blackIndexes[i]] = INVALID_PEG_COLOR;
-		}
-
-		for (i = 0; i < whiteIndexes.length; i++)
-		{
-			/*
-			 * System.out.print("["); for(int x = 0; x < whiteIndexes.length;
-			 * x++ ) System.out.print(whiteIndexes[x] + " ");
-			 * System.out.println("]");
-			 */
-			do
-			{
-				j = rng.nextInt(pegs.length);
-				// System.out.println("C");
-
-			}
-			while (j == whiteIndexes[i] || pegs[j] != INVALID_PEG_COLOR);
-			pegs[j] = copyOfSequenceToMatch[whiteIndexes[i]];
-			copyOfSequenceToMatch[whiteIndexes[i]] = INVALID_PEG_COLOR;
-		}
-
-		for (i = 0; i < copyOfSequenceToMatch.length; i++)
-			if (copyOfSequenceToMatch[i] != INVALID_PEG_COLOR
-					&& colors.length() > 1)
-				colorSpace.removeColor(copyOfSequenceToMatch[i]);
-
-		for (i = 0; i < pegs.length; i++)
-			if (pegs[i] == INVALID_PEG_COLOR)
-			{
-				// String temp = new String(pegs);
-				// System.out.println( temp );
-				pegs[i] = colorSpace.getRandomColor();
-			}
-
-		return pegs;
 	}
 }

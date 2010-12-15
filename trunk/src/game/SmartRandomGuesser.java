@@ -17,6 +17,13 @@ import data.RandomGuess;
  */
 public class SmartRandomGuesser implements Guesser
 {
+	/**
+	 * Limits the number of guesses to randomly generate for usage between rounds
+	 * of a single game.  If this max is reached, the current best generated guess
+	 * is returned.  This limit is the key to scaling effectively and its value
+	 * is deterministic of our performance (least number of guesses) - CPU time
+	 * ratio.
+	 */
 	private final static int MAX_NR_GUESSES_TO_GENERATE = 25000;
 
 	private ColorSpace pegColors;
@@ -189,6 +196,7 @@ public class SmartRandomGuesser implements Guesser
 			bestGuessIndex = feedbackForGuesses.size() - 1;
 	}
 
+	@Override
 	public String toString()
 	{
 		String returnString = "";
