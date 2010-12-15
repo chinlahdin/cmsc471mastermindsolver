@@ -20,7 +20,7 @@ public class Tester
 	private static final String NR_COLORS = "-c";
 	private static final String NR_GAMES = "-g";
 	private static final String BIAS_NUM = "-b";
-	
+
 	private static Scanner in = null;
 	private static String fileName = null;
 	private static boolean verbose = false;
@@ -29,8 +29,16 @@ public class Tester
 	private static int nrPegs = 0;
 	private static int nrColors = 0;
 	private static int nrGames = 0;
-	private static String bias = ""; 
+	private static String bias = "";
 
+	/**
+	 * Sets up the command line arguments.
+	 * 
+	 * @param args
+	 *            VERBOSITY_ON = "-v"; USE_KNUTH_4X6 = "-k"; LEARNING = "-l";
+	 *            NR_PEGS = "-p"; NR_COLORS = "-c"; NR_GAMES = "-g";BIAS_NUM =
+	 *            "-b";
+	 */
 	private static void verifyArgsAndSetup(String[] args)
 	{
 		for (int i = 0; i < args.length; i++)
@@ -46,7 +54,7 @@ public class Tester
 				nrColors = Integer.parseInt(args[++i]);
 			else if (args[i].equals(NR_GAMES))
 				nrGames = Integer.parseInt(args[++i]);
-			else if(args[i].equals(BIAS_NUM))
+			else if (args[i].equals(BIAS_NUM))
 				bias = args[++i];
 			else if (fileName == null)
 				fileName = args[i];
@@ -58,12 +66,18 @@ public class Tester
 			in = new Scanner(System.in);
 	}
 
+	/**
+	 * Creates the code maker.
+	 * 
+	 * @return
+	 */
 	private static Oracle initOracle()
 	{
 		if (fileName != null)
 		{
 			Oracle oracle = new Oracle(fileName);
-			if (knuth && !(oracle.getNumPegs() == 4 && oracle.getNumPegColors() == 6))
+			if (knuth
+					&& !(oracle.getNumPegs() == 4 && oracle.getNumPegColors() == 6))
 			{
 				knuth = false;
 			}
@@ -101,11 +115,16 @@ public class Tester
 		return new Oracle(nrPegs, nrColors);
 	}
 
+	/**
+	 * Main method for execution.
+	 * 
+	 * @param args
+	 */
 	public static void main(String[] args)
 	{
-		
-		long start =  System.nanoTime();
-		//long elapsed = 0;
+
+		long start = System.nanoTime();
+		// long elapsed = 0;
 		verifyArgsAndSetup(args);
 		Oracle oracle = initOracle();
 		Guesser guesser;
@@ -116,7 +135,8 @@ public class Tester
 			guesser = new Learner(oracle.getNumPegs(), oracle.getNumPegColors());
 		else
 			guesser = new SmartRandomGuesser(oracle.getNumPegs(),
-					oracle.getNumPegColors(), bias);
+					oracle.getNumPegColors(),
+					bias);
 
 		int nrGamesPlayed = 0;
 		int nrGuessesTotal = 0;
@@ -169,13 +189,14 @@ public class Tester
 
 			oracle.generateNextCode();
 			guesser.reset();
-			
+
 		}
 
 		long elapsed = System.nanoTime() - start;
-		
-		System.out.println("CPU Time: " +elapsed + " in nanoseconds");
-		System.out.println("Average CPU Time " +elapsed /(float) nrGamesPlayed+ " in nanoseconds");
+
+		System.out.println("CPU Time: " + elapsed + " in nanoseconds");
+		System.out.println("Average CPU Time " + elapsed
+				/ (float) nrGamesPlayed + " in nanoseconds");
 		System.out.println("Played " + nrGamesPlayed + " game"
 				+ (nrGamesPlayed > 1 ? "s" : "") + " with "
 				+ oracle.getNumPegs() + " PEGS and " + oracle.getNumPegColors()

@@ -13,6 +13,9 @@ import data.PatternStatistic;
 import data.RandomGuess;
 
 /**
+ * A learner is the only guesser that keeps track of games. Using a learning
+ * parameter that increases with more guesses, it makes better first guesses.
+ * 
  * @author M. Curtis, M. Edoror and B. Farrington
  * 
  */
@@ -37,6 +40,12 @@ public class Learner implements Guesser
 
 	boolean guessMatchesAll;
 
+	/**
+	 * Constructor for learner.
+	 * 
+	 * @param nrPegs
+	 * @param nrPegColors
+	 */
 	public Learner(int nrPegs, int nrPegColors)
 	{
 		threshold = 0.0;
@@ -58,6 +67,10 @@ public class Learner implements Guesser
 		reset();
 	}
 
+	/**
+	 * In between games, the learner studies the past code and updates its
+	 * statistics on each pattern.
+	 */
 	public void reset()
 	{
 		gamesPlayed++;
@@ -69,6 +82,13 @@ public class Learner implements Guesser
 		workingColorSpace = new ColorSpace(pegColors);
 	}
 
+	/**
+	 * This is where the learning occurs. Gamma is increased progressively and
+	 * capped after a certain point. A higher gamma means that the statistics
+	 * are more noteworthy.
+	 * 
+	 * @return
+	 */
 	private double study()
 	{
 		if (gamma < pegColors.length())
@@ -213,6 +233,11 @@ public class Learner implements Guesser
 		return false;
 	}
 
+	/**
+	 * The learner's guessing algorithm. Mainly based on the smart random
+	 * guesser, it uses its statistics to make a better first guess, providing
+	 * better feedback for the smart random guesser.
+	 */
 	public CodeSequence guess()
 	{
 
@@ -348,6 +373,13 @@ public class Learner implements Guesser
 		return bestNextGuess;
 	}
 
+	/**
+	 * Returns the most probable color. The colors are sorted in ascending
+	 * order.
+	 * 
+	 * @param rank
+	 * @return
+	 */
 	private PatternStatistic findProbableColor(int rank)
 	{
 		if (rank >= this.singleColorStats.size())
@@ -358,6 +390,9 @@ public class Learner implements Guesser
 		return this.singleColorStats.get(rank);
 	}
 
+	/**
+	 * Makes a guess and receives feedback for it.
+	 */
 	public void giveFeedbackForLastGuess(Feedback feedback)
 	{
 		if (feedbackForGuesses.size() != guesses.size() - 1)
