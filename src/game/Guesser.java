@@ -12,19 +12,23 @@ import data.Feedback;
 public interface Guesser
 {
 	/**
-	 * The method to be called in between games.
+	 * The method to be called in between games which
+	 * should clear out any cached data not required for the
+	 * next game.
 	 */
 	public void reset();
 
 	/**
-	 * Default guessing method.
+	 * Default guessing method that returns the Guesser's next
+	 * guess.
 	 * 
 	 * @return
 	 */
 	public CodeSequence guess();
 
 	/**
-	 * Receives feedback for the latest guess.
+	 * Receives feedback for the latest guess which should be called
+	 * after each guess call.
 	 * 
 	 * @param feedback
 	 */
